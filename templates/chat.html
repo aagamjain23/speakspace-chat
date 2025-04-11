@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SpeakSpace Chatroom</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+    <style>
+        body { font-family: Arial; margin: 0; padding: 20px; background: #f4f4f4; }
+        #messages { height: 400px; overflow-y: scroll; background: #fff; padding: 10px; border: 1px solid #ccc; margin-bottom: 10px; }
+        #input { width: 100%; padding: 10px; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <h2>SpeakSpace Group Chat</h2>
+    <div id="messages"></div>
+    <input id="input" placeholder="Type your message and press Enter" autocomplete="off" />
+
+    <script>
+        var socket = io();
+
+        const input = document.getElementById('input');
+        const messages = document.getElementById('messages');
+
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && input.value.trim() !== '') {
+                socket.send(input.value);
+                input.value = '';
+            }
+        });
+
+        socket.on('message', function(msg) {
+            const p = document.createElement('p');
+            p.textContent = msg;
+            messages.appendChild(p);
+            messages.scrollTop = messages.scrollHeight;
+        });
+    </script>
+</body>
+</html>
